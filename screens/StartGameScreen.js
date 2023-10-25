@@ -1,6 +1,28 @@
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { Colors } from '../constant/Colors';
 
-const StartGameScreen = () => {
+const StartGameScreen = (props) => {
+  const [enteredNumber, setEnteredNumber] = useState("");
+
+  const onChange = (enteredText) => {
+    setEnteredNumber(enteredText);
+  };
+
+  const resetNumber = () => {
+    setEnteredNumber("");
+  }
+
+  const confirmButtonPressed = () => {
+    const chosenNumber = parseInt(enteredNumber);
+    if (isNaN(chosenNumber) || chosenNumber <=0 || chosenNumber > 99) {
+      Alert.alert('Invalid Number', 'Number has to be a number between 1 and 99', [
+        { text: 'Okay', style: 'destructive', onPress: resetNumber }
+      ])
+    }
+    props.pickNumber(chosenNumber);
+  }
+
   return (
     <View style={styles.sectionWrapper}>
       <TextInput
@@ -9,13 +31,15 @@ const StartGameScreen = () => {
         keyboardType='number-pad'
         autoCapitalize='none'
         autoCorrect={false}
+        value={enteredNumber}
+        onChangeText={onChange}
       />
       <View style={styles.buttonWrapper}>
         <View style={styles.button}>
-          <Button title='Reset' color="#ff2222" />
+          <Button title='Reset' color={Colors.danger} onPress={resetNumber} />
         </View>
         <View style={styles.button}>
-          <Button title='Confirm' color="#1ee196" />
+          <Button title='Confirm' color={Colors.success} onPress={confirmButtonPressed} />
         </View>
       </View>
     </View>
@@ -26,7 +50,7 @@ const styles = StyleSheet.create({
   sectionWrapper: {
     margin: 10,
     padding: 20,
-    backgroundColor: "#0e1318b3"
+    backgroundColor: Colors.subSectionBg
   },
   inputContainer: {
     borderColor: 'white',
